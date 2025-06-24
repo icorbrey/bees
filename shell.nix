@@ -9,10 +9,14 @@
     ];
 
     shellHook = ''
-      if ! docker info > /dev/null 2>&1; then
-        echo "🔴 Docker daemon is not running. Please start Docker and try again."
+      raw_out="$(docker info 2>&1)" || {
+        if echo "$raw_out" | grep -qi "permission denied"; then
+          echo "🔒 Docker permission denied. Make sure you’re in the 'docker' group and have re-logged in (or run 'newgrp docker')."
+        else
+          echo "🔴 Docker daemon is not running. Please start Docker and try again."
+        fi
         return 1
-      fi
+      }
 
       if ! kind get clusters | grep -q "^dev$"; then
         echo "⚡ Creating a 'dev' kind cluster..."
