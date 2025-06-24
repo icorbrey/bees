@@ -2,9 +2,10 @@
   default = pkgs.mkShell {
     buildInputs = with pkgs; [
       docker
+      helm
       kind
       kubectl
-      helm
+      tilt
     ];
 
     shellHook = ''
