@@ -27,13 +27,9 @@ spec:
       containers:
         - name: bees-postgres
           image: postgres:15
-          env:
-            - name: POSTGRES_DB
-              value: bees
-            - name: POSTGRES_USER
-              value: bees
-            - name: POSTGRES_PASSWORD
-              value: bees-pass
+          envFrom:
+            - secretRef:
+                name: bees-secrets
           ports:
             - containerPort: 5432
           volumeMounts:
