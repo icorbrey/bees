@@ -1,5 +1,12 @@
 { pkgs, ... }: {
   default = pkgs.mkShell {
+    nativeBuildInputs = with pkgs; [
+      cargo
+      openssl.dev
+      pkg-config
+      rustc
+    ];
+    
     buildInputs = with pkgs; [
       docker
       helm
