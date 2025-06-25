@@ -5,6 +5,7 @@
       helm
       kind
       kubectl
+      sqlx-cli
       tilt
     ];
 

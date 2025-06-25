@@ -7,13 +7,18 @@ feedback.
 
 ## Getting started
 
-Bees is a containerized system running in Kubernetes. If you don't want to
-utilize Nix, you will need to stand up your own Docker service and Kubernetes
-cluster locally for development.
+Bees is a containerized system running in Kubernetes. As a prerequisite, you
+will need to have a Docker daemon configured on your machine.
 
 ```sh
 git clone https://github.com/icorbrey/bees.git
+cd bees
+
+# This is a Nix-first project. If you don't have Nix installed or don't want to
+# use it, you will need to stand up your own Kubernetes cluster and ensure Tilt
+# and sqlx-cli are installed.
 nix develop
+
 tilt up
 ```
 
