@@ -1,3 +1,8 @@
 .env
-.docker-config/config.json
+.docker-config/
 /target
+*~
+*.bak
+*.orig
+*.swp
+helix-undo/

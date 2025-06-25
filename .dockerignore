@@ -1,1 +1,6 @@
 .jj/
+*~
+*.bak
+*.orig
+*.swp
+helix-undo/

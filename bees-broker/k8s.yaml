@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bees-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bees-broker
+  template:
+    metadata:
+      labels:
+        app: bees-broker
+    spec:
+      volumes:
+        - name: github-private-key
+          secret:
+            secretName: github-private-key
+      containers:
+        - name: bees-broker
+          image: bees-broker
+          envFrom:
+            - secretRef:
+                name: bees-secrets
+          volumeMounts:
+            - name: github-private-key
+              mountPath: /secrets/github-private-key
+              readOnly: true
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bees-broker
+spec:
+  selector:
+    app: bees-broker
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
