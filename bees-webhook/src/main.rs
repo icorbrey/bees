@@ -1,11 +1,11 @@
 use axum::{
     Json, Router,
-    http::StatusCode,
+    http::{HeaderMap, StatusCode},
     routing::{get, post},
 };
-use octokit_rs::webhook::IssueCommentCreated;
+use serde_json::Value;
 use tokio::net::TcpListener;
-use tracing::trace;
+use tracing::{info, trace, warn};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -15,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/health", get(health_check))
-        .route("/new-work", post(ingest_new_work));
+        .route("/webhook", post(webhook));
 
     let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await?;
     info!("Server starting on port {port}");
@@ -28,11 +28,20 @@ async fn health_check() -> StatusCode {
     StatusCode::OK
 }
 
-async fn ingest_new_work(Json(_payload): Json<IssueCommentCreated>) -> StatusCode {
-    trace!("Ingesting new work");
+async fn webhook(headers: HeaderMap, Json(_raw): Json<Value>) -> StatusCode {
+    trace!("Received webhook request");
 
-    // TODO: Validate webhook delivery
-    // TODO: Handle webhook delivery
+    let event = headers
+        .get("X-GitHub-Event")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("unknown");
 
-    StatusCode::OK
+    match event {
+        "issue_comment" => todo!(),
+        "pull_request_review" => todo!(),
+        invalid => {
+            warn!("Ignoring GitHub event: `{invalid}`");
+            StatusCode::NO_CONTENT
+        }
+    }
 }

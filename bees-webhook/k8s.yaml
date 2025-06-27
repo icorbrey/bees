@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bees-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bees-webhook
+  template:
+    metadata:
+      labels:
+        app: bees-webhook
+    spec:
+      containers:
+        - name: bees-webhook
+          image: bees-webhook
+          envFrom:
+            - secretRef:
+                name: bees-secrets
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bees-webhook
+spec:
+  selector:
+    app: bees-webhook
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
